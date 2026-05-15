@@ -28,13 +28,25 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     const agregarNumero = (numeroIngresado: NumeroIngresado) => {
         setNumerosIngresados((prev) => {
             const nuevoArray = [...prev, numeroIngresado];
-            if (nuevoArray.length === 5) setFase('convirtiendo');
+            if (nuevoArray.length === 5) {
+                setFase('convirtiendo');
+                setIndiceNumeroActual(0);
+                setIndicePasoActual(0);
+            }
             return nuevoArray;
         });
+
+        if (numerosIngresados.length < 4) {
+            avanzarNumero();
+        }
     };
 
     const guardarConversion = (pasosConversion: ResultadoOperacion) => {
-        setResultadosConversion((prev) => [...prev, pasosConversion]);
+        setResultadosConversion((prev) => {
+            const nuevoArray = [...prev, pasosConversion];
+            if (nuevoArray.length === 5) setFase('operando');
+            return nuevoArray;
+        });
     };
 
     const operarFracciones = async () => {
@@ -53,10 +65,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-
     return (
-        <GameContext.Provider value={
-            {
+        <GameContext.Provider
+            value={{
                 fase,
                 numerosIngresados,
                 resultadosConversion,
@@ -70,9 +81,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
                 retrocederPaso,
                 avanzarNumero,
                 operarFracciones,
-            }
-        }>
+            }}
+        >
             {children}
         </GameContext.Provider>
-    )
+    );
 };
