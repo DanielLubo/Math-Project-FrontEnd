@@ -9,95 +9,86 @@ import {
 } from '../api/calculadora';
 
 export const ConvirtiendoNumerosView = () => {
-    const { indiceNumeroActual, numerosIngresados, guardarConversion, avanzarNumero } = useGame();
+    const {
+        indiceNumeroActual,
+        numerosIngresados,
+        resultadosConversion,
+        guardarConversion,
+        avanzarNumero,
+        indicePasoActual,
+        avanzarPaso,
+        retrocederPaso,
+    } = useGame();
+
+    const conversionActual = resultadosConversion[indiceNumeroActual];
 
     useEffect(() => {
+        if (resultadosConversion[indiceNumeroActual]) return;
+
         const numeroActual = numerosIngresados[indiceNumeroActual];
         const tipoActual = numeroActual.tipo;
-        console.log('indice:', indiceNumeroActual, 'tipo:', tipoActual);
         const valoresActuales = numeroActual.valores;
-
-        const manejarSiguiente = () => {
-            if (indiceNumeroActual < 4) {
-                avanzarNumero();
-            }
-        };
 
         switch (tipoActual) {
             case 'fraccion': {
-                const fraccion = {
+                const { numerador, denominador, esNegativo } = {
                     numerador: parseInt(valoresActuales.numerador),
                     denominador: parseInt(valoresActuales.denominador),
                     esNegativo: numeroActual.esNegativo,
                 };
-                const { numerador, denominador, esNegativo } = fraccion;
-
                 const convertir = async () => {
                     const response = await simplificarFraccion(numerador, denominador, esNegativo);
                     guardarConversion(response.data);
-                    manejarSiguiente();
                 };
                 convertir();
                 break;
             }
-
             case 'mixto': {
-                const numeroMixto = {
+                const { numeroEntero, numerador, denominador, esNegativo } = {
                     numeroEntero: parseInt(valoresActuales.entero),
                     numerador: parseInt(valoresActuales.numerador),
                     denominador: parseInt(valoresActuales.denominador),
                     esNegativo: numeroActual.esNegativo,
                 };
-                const { numeroEntero, numerador, denominador, esNegativo } = numeroMixto;
-
                 const convertir = async () => {
                     const response = await convertirMixto(numeroEntero, numerador, denominador, esNegativo);
                     guardarConversion(response.data);
-                    manejarSiguiente();
                 };
                 convertir();
                 break;
             }
-
             case 'decimal': {
-                const numeroDecimal = { numero: valoresActuales.numero, esNegativo: numeroActual.esNegativo };
-                const { numero, esNegativo } = numeroDecimal;
-
+                const { numero, esNegativo } = {
+                    numero: valoresActuales.numero,
+                    esNegativo: numeroActual.esNegativo,
+                };
                 const convertir = async () => {
                     const response = await convertirDecimal(numero, esNegativo);
                     guardarConversion(response.data);
-                    manejarSiguiente();
                 };
                 convertir();
                 break;
             }
-
             case 'periodicoPuro': {
-                const periodicoPuro = {
+                const { numeroEntero, numeroPeriodico, esNegativo } = {
                     numeroEntero: valoresActuales.numeroEntero,
                     numeroPeriodico: valoresActuales.numeroPeriodico,
                     esNegativo: numeroActual.esNegativo,
                 };
-                const { numeroEntero, numeroPeriodico, esNegativo } = periodicoPuro;
-
                 const convertir = async () => {
                     const response = await convertirNumeroPeriodicoPuro(numeroEntero, numeroPeriodico, esNegativo);
                     guardarConversion(response.data);
-                    manejarSiguiente();
                 };
                 convertir();
                 break;
             }
-
             case 'periodicoMixto': {
-                const periodicoMixto = {
+                const { numeroEntero, numeroNoPeriodico, numeroPeriodico, esNegativo } = {
                     numeroEntero: valoresActuales.numeroEntero,
                     numeroNoPeriodico: valoresActuales.numeroNoPeriodico,
                     numeroPeriodico: valoresActuales.numeroPeriodico,
                     esNegativo: numeroActual.esNegativo,
                 };
-                const { numeroEntero, numeroNoPeriodico, numeroPeriodico, esNegativo } = periodicoMixto;
-
                 const convertir = async () => {
                     const response = await convertirNumeroPeriodicoMixto(
                         numeroEntero,
@@ -106,19 +97,39 @@ export const ConvirtiendoNumerosView = () => {
                         esNegativo
                     );
                     guardarConversion(response.data);
-                    manejarSiguiente();
                 };
                 convertir();
                 break;
             }
         }
-    }, [indiceNumeroActual, numerosIngresados]);
+    }, [indiceNumeroActual, numerosIngresados, resultadosConversion]);
+
+    if (!conversionActual) return <div>Convirtiendo...</div>;
+
+    const pasos = conversionActual.pasos;
+    const esUltimoPaso = indicePasoActual === pasos.length - 1;
+    const esUltimoNumero = indiceNumeroActual === 4;
+
+    const handleSiguiente = () => {
+        if (esUltimoPaso) {
+            if (!esUltimoNumero) {
+                avanzarNumero();
+            }
+        } else {
+            avanzarPaso();
+        }
+    };
 
     return (
-        <>
-            <div>
-                <h1>Convirtiendo los numeros</h1>
-            </div>
-        </>
+        <div>
+            <h1>Convirtiendo número {indiceNumeroActual + 1} de 5</h1>
+            <p>{pasos[indicePasoActual]}</p>
+            <button onClick={retrocederPaso} disabled={indicePasoActual === 0}>
+                Atrás
+            </button>
+            {esUltimoPaso && esUltimoNumero ? null : (
+                <button onClick={handleSiguiente}>{esUltimoPaso ? 'Siguiente número' : 'Siguiente paso'}</button>
+            )}
+        </div>
     );
 };
