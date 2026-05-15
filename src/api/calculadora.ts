@@ -7,7 +7,12 @@ export const simplificarFraccion = (numerador: number, denominador: number, esNe
 export const convertirDecimal = (numero: string, esNegativo: boolean) =>
     axiosInstance.post<ResultadoOperacion>('/convertir/decimal', { numero, esNegativo });
 
-export const convertirMixto = (numeroEntero: number, numerador: number, denominador: number, esNegativo: boolean) =>
+export const convertirMixto = (
+    numeroEntero: number,
+    numerador: number,
+    denominador: number,
+    esNegativo: boolean
+) =>
     axiosInstance.post<ResultadoOperacion>('/convertir/mixto', {
         numeroEntero,
         numerador,
@@ -16,7 +21,7 @@ export const convertirMixto = (numeroEntero: number, numerador: number, denomina
     });
 
 export const convertirNumeroPeriodicoPuro = (numeroEntero: string, numeroPeriodico: string, esNegativo: boolean) =>
-    axiosInstance.post<ResultadoOperacion>('/convertir/periodico-puro', { numeroEntero, numeroPeriodico, esNegativo });
+    axiosInstance.post<ResultadoOperacion>('/convertir/periodico-puro', { numeroEntero, numeroPeriodico,esNegativo });
 
 export const convertirNumeroPeriodicoMixto = (
     numeroEntero: string,
