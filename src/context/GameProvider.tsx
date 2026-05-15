@@ -51,18 +51,18 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
     const operarFracciones = async () => {
         const fracciones = resultadosConversion.map((r) => r.fraccion);
-
         try {
             const response = await operar(fracciones);
-            if (!response) {
-                throw new Error('Error de que no se pudo enviar la dta creo');
-            }
-            const resultadoFinal = response.data;
-            setResultadoFinal(resultadoFinal);
-            setFase('resultado');
+            if (!response) throw new Error('Error al operar fracciones');
+            setResultadoFinal(response.data);
+            // ← ya no cambia la fase aquí
         } catch (err) {
             console.error(err);
         }
+    };
+
+    const irAResultado = () => {
+        setFase('resultado');
     };
 
     return (
@@ -81,6 +81,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
                 retrocederPaso,
                 avanzarNumero,
                 operarFracciones,
+                irAResultado,
             }}
         >
             {children}
