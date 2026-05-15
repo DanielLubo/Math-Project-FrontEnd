@@ -1,8 +1,28 @@
 import './App.css';
+import { ConvirtiendoNumerosView } from './components/ConvirtiendoNumerosView';
+import { IngresandoView } from './components/IngresandoView';
+import { OperandoView } from './components/OperandoView';
+import { ResultadoView } from './components/ResultadoView';
+import { useGame } from './hooks/useGame';
+
+
+
 function App() {
+
+    const { fase } = useGame();
+
+    const renderFase = () => {
+        switch(fase) {
+            case 'convirtiendo': return <ConvirtiendoNumerosView/>;
+            case 'ingresando' : return <IngresandoView/>;
+            case 'operando' : return <OperandoView/>;
+            case 'resultado' : return <ResultadoView/>;
+        }
+    }
+
     return (
         <>
-            <h1 className="text-3xl font-bold">EL pepe y ete setch</h1>
+            {renderFase()}
         </>
     );
 }
