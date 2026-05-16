@@ -18,6 +18,7 @@ interface GameContextType {
     avanzarNumero: () => void;
     operarFracciones: () => Promise<void>;
     irAResultado: () => void;
+    irAOperando: () => void;
 }
 
 // Context

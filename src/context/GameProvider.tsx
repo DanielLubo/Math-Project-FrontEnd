@@ -43,9 +43,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
     const guardarConversion = (pasosConversion: ResultadoOperacion) => {
         setResultadosConversion((prev) => {
-            const nuevoArray = [...prev, pasosConversion];
-            if (nuevoArray.length === 5) setFase('operando');
-            return nuevoArray;
+            if (prev.length > indiceNumeroActual) return prev;
+            return [...prev, pasosConversion];
+            // ← ya no cambia la fase aquí
         });
     };
 
@@ -65,6 +65,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         setFase('resultado');
     };
 
+    const irAOperando = () => setFase('operando');
+
     return (
         <GameContext.Provider
             value={{
@@ -82,6 +84,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
                 avanzarNumero,
                 operarFracciones,
                 irAResultado,
+                irAOperando,
             }}
         >
             {children}
