@@ -18,6 +18,7 @@ export const ConvirtiendoNumerosView = () => {
         indicePasoActual,
         avanzarPaso,
         retrocederPaso,
+        irAOperando,
     } = useGame();
 
     const conversionActual = resultadosConversion[indiceNumeroActual];
@@ -112,7 +113,9 @@ export const ConvirtiendoNumerosView = () => {
 
     const handleSiguiente = () => {
         if (esUltimoPaso) {
-            if (!esUltimoNumero) {
+            if (esUltimoNumero) {
+                irAOperando();
+            } else {
                 avanzarNumero();
             }
         } else {
@@ -127,9 +130,10 @@ export const ConvirtiendoNumerosView = () => {
             <button onClick={retrocederPaso} disabled={indicePasoActual === 0}>
                 Atrás
             </button>
-            {esUltimoPaso && esUltimoNumero ? null : (
-                <button onClick={handleSiguiente}>{esUltimoPaso ? 'Siguiente número' : 'Siguiente paso'}</button>
-            )}
+            <button onClick={handleSiguiente}>
+                {esUltimoPaso && esUltimoNumero ? 'Continuar' : esUltimoPaso ? 'Siguiente número' : 'Siguiente paso'}
+            </button>
+
         </div>
     );
 };
