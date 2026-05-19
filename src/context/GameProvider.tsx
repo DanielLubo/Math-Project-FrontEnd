@@ -45,7 +45,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         setResultadosConversion((prev) => {
             if (prev.length > indiceNumeroActual) return prev;
             return [...prev, pasosConversion];
-            // ← ya no cambia la fase aquí
         });
     };
 
@@ -55,7 +54,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
             const response = await operar(fracciones);
             if (!response) throw new Error('Error al operar fracciones');
             setResultadoFinal(response.data);
-            // ← ya no cambia la fase aquí
         } catch (err) {
             console.error(err);
         }
